@@ -19,7 +19,7 @@ jobs:
         
       - name: Build and save Docker image
         run: |
-          docker build -t storyblokdevops/ruby-example-save:latest .
-          docker save storyblokdevops/ruby-example-save:latest -o image.tar
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ruby-example-save:latest .
+          docker save ${{ secrets.DOCKER_USERNAME }}/ruby-example-save:latest -o image.tar
           docker load -i image.tar
-          docker push storyblokdevops/ruby-example-save:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/ruby-example-save:latest
