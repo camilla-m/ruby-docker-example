@@ -17,12 +17,13 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and save Docker image
         run: |
-          docker build -t ruby-example:latest .
-          docker save ruby-example:latest -o image.tar
-      - name: Push Docker image
+          docker build -t ruby-example-save:latest .
+          docker save ruby-example-save:latest -o image.tar
+      - name: Load and push Docker image
         uses: docker/load-action@v1
         with:
           load: image.tar
-          registry: storyblokdevops
-          repository: ruby-example
-          tags: latest
+
+      - name: Push Docker image
+        run: |
+          docker push storyblokdevops/ruby-example-save:latest
