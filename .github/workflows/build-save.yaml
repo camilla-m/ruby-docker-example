@@ -20,7 +20,7 @@ jobs:
           docker build -t ruby-example-save:latest .
           docker save ruby-example-save:latest -o image.tar
       - name: Load and push Docker image
-        uses: docker/load-action@v1
+        uses: docker/github-actions/load@v1
         with:
           load: image.tar
 
