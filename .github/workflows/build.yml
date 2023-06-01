@@ -27,4 +27,4 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: camilla-m/ruby-example:latest
+          tags: storyblokdevops/ruby-example:latest
