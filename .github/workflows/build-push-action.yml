@@ -1,34 +1,38 @@
-name: Build Docker Image
+name: Build and Push Docker Image
+
 on:
   push:
     branches:
       - main
 
 jobs:
-  build:
+  build-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Enable Docker BuildKit
-        run: |
-          echo '{"features": {"buildkit": true}}' | sudo tee /etc/docker/daemon.json
-          sudo service docker restart
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      - name: Log in to Docker
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ hashFiles('**/Dockerfile') }}
+
+      - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          
-      - name: Build and push Docker image
+
+      - name: Build and Push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/ruby-example:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: docker.io/${{ secrets.DOCKER_USERNAME }}/rubycache:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
